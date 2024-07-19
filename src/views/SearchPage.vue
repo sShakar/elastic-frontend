@@ -1,19 +1,38 @@
 <template>
-	<form class="form" @submit.prevent="onSubmit">
-		<label for="search">Search for name</label>
-		<input v-model="searchField" name="search" type="text" />
+	<div>
+		<form class="form" @submit.prevent="onSubmit">
+			<label for="search">Search for name</label>
+			<input v-model="query" name="search" type="text" />
 
-		<button type="submit">Search</button>
-	</form>
+			<button type="submit">Search</button>
+		</form>
+
+		<ul>
+			<li v-for="(result, index) in results" :key="index">
+				<strong>{{
+					result.highlight && result.highlight.content ? result.highlight.content : result._source.title
+				}}</strong
+				>: <a :href="`http://localhost:3000/uploads/${result._source.fileName}`">{{ result._source.title }}</a>
+			</li>
+		</ul>
+	</div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { $api } from '@/services';
 
-const searchField = ref<string | null>();
+const query = ref<string | null>();
+const results = ref<any[]>([]);
 
-function onSubmit() {
-	console.log(searchField.value);
+async function onSubmit() {
+	console.log(query.value);
+	try {
+		const response = await $api.post('http://localhost:3000/pdf/upload', { query });
+		console.log(response);
+	} catch (error) {
+		console.error('Error uploading file:', error);
+	}
 }
 </script>
 

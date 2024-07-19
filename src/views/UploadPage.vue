@@ -1,24 +1,61 @@
 <template>
-	<form class="form" @submit.prevent="onSubmit">
-		<label for="file">Upload PDF file</label>
-		<input ref="uploadField" name="file" type="file" />
+	<div>
+		<form class="form" @submit.prevent="onSubmit">
+			<label for="file">Upload PDF file</label>
+			<input ref="uploadField" name="file" type="file" />
 
-		<button type="submit">Submit</button>
-	</form>
+			<button type="submit">Submit</button>
+		</form>
+
+		<h2>PDFs</h2>
+		<ul>
+			<li v-for="(pdf, index) in pdfs" :key="index">
+				<a :href="`http://localhost:3000/${pdf._source.fileName}`" target="_blank">{{ pdf._source.title }}</a>
+			</li>
+		</ul>
+	</div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { $api } from '@/services';
 
-const uploadField = ref<HTMLInputElement | null>();
+const uploadField = ref<HTMLInputElement | null>(null);
+const pdfs = ref<any[]>([]);
 
-function onSubmit() {
+async function onSubmit() {
 	console.log(uploadField.value?.files![0]);
+	const formData = new FormData();
+	formData.append('file', uploadField.value?.files![0] as Blob);
+
+	try {
+		const response = await $api.post('http://localhost:3000/pdf/upload', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+		console.log(response);
+	} catch (error) {
+		console.error('Error uploading file:', error);
+	}
 }
+
+const fetchAllPdfs = async () => {
+	try {
+		const data: any = await $api.get('http://localhost:3000/pdf/all');
+		console.log(data.hits.hits);
+		pdfs.value = data.hits.hits;
+	} catch (error) {
+		console.error('Error fetching PDFs:', error);
+	}
+};
+
+onMounted(() => fetchAllPdfs());
 </script>
 
 <style lang="scss" scoped>
 .form {
+	margin-bottom: 20px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
