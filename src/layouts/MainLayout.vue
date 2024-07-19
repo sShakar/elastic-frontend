@@ -16,14 +16,14 @@ import TheHeader from '@/components/TheHeader.vue';
 <style lang="scss" scoped>
 .container {
 	padding: 20px;
-
 	background-color: #d3d3d3;
 	width: 100%;
 	height: 100vh;
 }
 
 .page {
-	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.2) 0 10px 14px;
+	border-radius: 5px;
 	padding: 20px;
 	background-color: white;
 	height: 80%;

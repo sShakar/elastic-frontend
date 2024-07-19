@@ -8,11 +8,13 @@
 		</form>
 
 		<h2>PDFs</h2>
-		<ul>
+		<ol class="results">
 			<li v-for="(pdf, index) in pdfs" :key="index">
-				<a :href="`http://localhost:3000/${pdf._source.fileName}`" target="_blank">{{ pdf._source.title }}</a>
+				<a :href="`http://localhost:3000/${pdf._source.fileName}`" target="_blank"
+					>{{ pdf._source.title }} <span style="font-size: 20px">&#10532;</span></a
+				>
 			</li>
-		</ul>
+		</ol>
 	</div>
 </template>
 
@@ -24,7 +26,6 @@ const uploadField = ref<HTMLInputElement | null>(null);
 const pdfs = ref<any[]>([]);
 
 async function onSubmit() {
-	console.log(uploadField.value?.files![0]);
 	const formData = new FormData();
 	formData.append('file', uploadField.value?.files![0] as Blob);
 
@@ -35,20 +36,21 @@ async function onSubmit() {
 			}
 		});
 		console.log(response);
+		await fetchAllPdfs();
 	} catch (error) {
 		console.error('Error uploading file:', error);
 	}
 }
 
-const fetchAllPdfs = async () => {
+async function fetchAllPdfs() {
 	try {
 		const data: any = await $api.get('http://localhost:3000/pdf/all');
-		console.log(data.hits.hits);
+		console.log('fetch all pdfs: ', data.hits.hits);
 		pdfs.value = data.hits.hits;
 	} catch (error) {
 		console.error('Error fetching PDFs:', error);
 	}
-};
+}
 
 onMounted(() => fetchAllPdfs());
 </script>
@@ -81,6 +83,19 @@ onMounted(() => fetchAllPdfs());
 		&:hover {
 			scale: 1.1;
 		}
+	}
+}
+
+.results {
+	a,
+	a:active,
+	a:visited {
+		color: black;
+		text-decoration: none;
+	}
+	a:hover {
+		color: darkgreen;
+		text-decoration: underline;
 	}
 }
 </style>

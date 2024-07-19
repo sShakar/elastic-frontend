@@ -25,7 +25,8 @@ module.exports = {
 	rules: {
 		'prettier/prettier': 'error',
 		'no-console': 'warn',
-		'@typescript-eslint/no-unused': 'warning',
+		'@typescript-eslint/no-console': 'warn',
+		'@typescript-eslint/no-unused-vars': 'warn',
 		'@typescript-eslint/ban-ts-comment': 'off',
 		'@typescript-eslint/naming-convention': [
 			'error',

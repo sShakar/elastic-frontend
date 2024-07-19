@@ -17,7 +17,8 @@ function isActive(path = ''): boolean {
 
 <style lang="scss" scoped>
 .header {
-	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.2) 0 2px 14px;
+	border-radius: 5px;
 	padding: 30px;
 	background-color: white;
 	height: 10px;

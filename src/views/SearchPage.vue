@@ -28,7 +28,7 @@ const results = ref<any[]>([]);
 async function onSubmit() {
 	console.log(query.value);
 	try {
-		const response = await $api.post('http://localhost:3000/pdf/upload', { query });
+		const response = await $api.post('http://localhost:3000/pdf/search', { query });
 		console.log(response);
 	} catch (error) {
 		console.error('Error uploading file:', error);
