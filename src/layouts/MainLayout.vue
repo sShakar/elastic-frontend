@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<the-header />
 		<div class="container">
+			<the-header />
 			<div class="page">
 				<router-view />
 			</div>
@@ -15,14 +15,15 @@ import TheHeader from '@/components/TheHeader.vue';
 
 <style lang="scss" scoped>
 .container {
-	display: grid;
+	padding: 20px;
+
 	background-color: #d3d3d3;
 	width: 100%;
 	height: 100vh;
 }
 
 .page {
-	margin: 20px;
+	border-radius: 10px;
 	padding: 20px;
 	background-color: white;
 	height: 80%;
