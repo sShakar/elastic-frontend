@@ -15,9 +15,9 @@ const routes: RouteRecordRaw[] = [
 				}
 			},
 			{
-				name: 'query',
-				path: 'query',
-				component: () => import('@/views/QueryPage.vue'),
+				name: 'search',
+				path: 'search',
+				component: () => import('@/views/SearchPage.vue'),
 				meta: {
 					title: 'Update Staff'
 				}

@@ -1,7 +1,7 @@
 <template>
 	<ul class="header">
 		<li @click="$router.push('/')" :class="isActive('/') && 'active'">Upload</li>
-		<li @click="$router.push('query')" :class="isActive('/query') && 'active'">Query</li>
+		<li @click="$router.push('search')" :class="isActive('/search') && 'active'">Search</li>
 	</ul>
 </template>
 
