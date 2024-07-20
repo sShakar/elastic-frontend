@@ -31,6 +31,7 @@ function isActive(path = ''): boolean {
 	li {
 		margin: 0 20px;
 		cursor: pointer;
+		font-weight: bold;
 	}
 }
 

@@ -18,7 +18,7 @@ import TheHeader from '@/components/TheHeader.vue';
 	padding: 20px;
 	background-color: #d3d3d3;
 	width: 100%;
-	height: 100vh;
+	min-height: 100vh;
 }
 
 .page {
@@ -26,6 +26,6 @@ import TheHeader from '@/components/TheHeader.vue';
 	border-radius: 5px;
 	padding: 20px;
 	background-color: white;
-	height: 80%;
+	min-height: 80vh;
 }
 </style>

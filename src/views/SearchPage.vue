@@ -1,18 +1,20 @@
 <template>
-	<div>
+	<div style="text-align: center">
 		<form class="form" @submit.prevent="onSubmit">
 			<label for="search">Search for name</label>
-			<input v-model="query" name="search" type="text" />
-
-			<button type="submit">Search</button>
+			<div class="flex">
+				<input v-model="query" name="search" type="text" @update="debouncedSubmit" />
+				<button type="submit">Search</button>
+			</div>
 		</form>
 
-		<ul>
+		<ul v-if="results" class="results">
 			<li v-for="(result, index) in results" :key="index">
-				<strong>{{
-					result.highlight && result.highlight.content ? result.highlight.content : result._source.title
-				}}</strong
-				>: <a :href="`http://localhost:3000/uploads/${result._source.fileName}`">{{ result._source.title }}</a>
+				<div v-for="(content, index) in result.matches" :key="index" class="matches">
+					<strong>{{ extractFromHTML(content) }}</strong>
+					<a :href="`http://localhost:3000/${result.filename}`" target="_blank">{{ result.title }}</a>
+					<hr style="width: 50%; height: 1px; color: darkgreen" />
+				</div>
 			</li>
 		</ul>
 	</div>
@@ -26,13 +28,31 @@ const query = ref<string | null>();
 const results = ref<any[]>([]);
 
 async function onSubmit() {
-	console.log(query.value);
+	results.value = [];
+	console.log('query: ', query.value);
 	try {
-		const response = await $api.post('http://localhost:3000/pdf/search', { query });
-		console.log(response);
+		const data: any = await $api.post('http://localhost:3000/pdf/search', { query: query.value });
+		data.hits.hits.forEach((hit: any) =>
+			results.value.push({ filename: hit._source.fileName, title: hit._source.title, matches: hit.highlight.content })
+		);
 	} catch (error) {
 		console.error('Error uploading file:', error);
 	}
+}
+
+async function debouncedSubmit() {
+	setTimeout(async () => {
+		if (query.value) await onSubmit();
+	}, 100);
+}
+
+function extractFromHTML(html: string) {
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(html, 'text/html');
+
+	console.log(doc);
+	const emElements = doc.getElementsByTagName('em');
+	return Array.from(emElements).map(el => el.textContent);
 }
 </script>
 
@@ -46,30 +66,79 @@ async function onSubmit() {
 	label {
 		margin: 20px;
 	}
+
 	input {
 		margin: 20px;
 		padding: 12px;
 		width: 50%;
 
 		&:focus {
-			outline: darkgreen solid 1px;
+			outline: darkgreen solid 0.1px;
 			border: none;
 		}
 	}
+
 	button {
-		color: darkgreen;
+		color: white;
 		cursor: pointer;
 		margin: 10px;
 		padding: 12px 22px;
-		background-color: transparent;
+		background-color: darkgreen;
 		border-radius: 10px;
-		border: darkgreen solid 1px;
+		border: none;
 		box-shadow: 2px 1px 18px rgba(0, 0, 0, 0.2);
 		transition: ease-in-out 0.2s;
 
 		&:hover {
-			scale: 1.1;
+			scale: 1.02;
 		}
+	}
+}
+
+.flex {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.results {
+	a,
+	a:active,
+	a:visited {
+		color: black;
+		text-decoration: none;
+	}
+	a:hover {
+		color: darkgreen;
+		text-decoration: underline;
+	}
+
+	li {
+		list-style: none;
+	}
+}
+
+.result-item {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+
+	a {
+		margin: 20px;
+	}
+}
+
+.matches {
+	display: flex;
+	flex-direction: column;
+
+	strong {
+		margin-bottom: 10px;
+	}
+
+	a {
+		margin-bottom: 20px;
 	}
 }
 </style>

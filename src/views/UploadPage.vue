@@ -2,12 +2,13 @@
 	<div>
 		<form class="form" @submit.prevent="onSubmit">
 			<label for="file">Upload PDF file</label>
-			<input ref="uploadField" name="file" type="file" />
-
-			<button type="submit">Submit</button>
+			<div class="flex">
+				<input ref="uploadField" name="file" type="file" />
+				<button type="submit">Submit</button>
+			</div>
 		</form>
 
-		<h2>PDFs</h2>
+		<h2 v-if="pdfs.length">PDFs</h2>
 		<ol class="results">
 			<li v-for="(pdf, index) in pdfs" :key="index">
 				<a :href="`http://localhost:3000/${pdf._source.fileName}`" target="_blank"
@@ -66,24 +67,38 @@ onMounted(() => fetchAllPdfs());
 	label {
 		margin: 20px;
 	}
+
 	input {
+		cursor: pointer;
+		padding: 12px;
 		margin: 20px;
+		border: solid 1px black;
+		width: 50%;
 	}
+
 	button {
-		color: darkgreen;
+		color: white;
 		cursor: pointer;
 		margin: 10px;
 		padding: 12px 22px;
-		background-color: transparent;
+		background-color: darkgreen;
 		border-radius: 10px;
-		border: darkgreen solid 1px;
+		border: none;
 		box-shadow: 2px 1px 18px rgba(0, 0, 0, 0.2);
 		transition: ease-in-out 0.2s;
 
 		&:hover {
-			scale: 1.1;
+			scale: 1.02;
 		}
 	}
+}
+
+.flex {
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
 }
 
 .results {
