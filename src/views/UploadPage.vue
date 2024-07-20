@@ -42,7 +42,7 @@ async function onSubmit() {
 				'Content-Type': 'multipart/form-data'
 			}
 		});
-		await fetchAllPdfs();
+		setTimeout(async () => await fetchAllPdfs(), 1000);
 	} catch (error) {
 		console.error('Error uploading file:', error);
 	} finally {
@@ -53,14 +53,13 @@ async function onSubmit() {
 async function fetchAllPdfs() {
 	try {
 		const data: any = await $api.get('http://localhost:3000/pdf/all');
-		console.log('fetch all pdfs: ', data.hits.hits);
 		pdfs.value = data.hits.hits;
 	} catch (error) {
 		console.error('Error fetching PDFs:', error);
 	}
 }
 
-onMounted(() => fetchAllPdfs());
+onMounted(async () => await fetchAllPdfs());
 </script>
 
 <style lang="scss" scoped>

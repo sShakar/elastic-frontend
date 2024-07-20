@@ -3,7 +3,7 @@
 		<form class="form" @submit.prevent="onSubmit">
 			<label for="search">Search for name</label>
 			<div class="flex">
-				<input v-model="query" name="search" type="text" @update="debouncedSubmit" />
+				<input v-model="query" name="search" type="text" @keyup="debouncedSubmit" @change="debouncedSubmit" />
 				<button type="submit">Search</button>
 			</div>
 		</form>
@@ -20,6 +20,8 @@
 			</li>
 		</ul>
 	</div>
+
+	<h1 style="text-align: center" v-if="isLoading">Loading...</h1>
 </template>
 
 <script lang="ts" setup>
@@ -28,17 +30,20 @@ import { $api } from '@/services';
 
 const query = ref<string | null>();
 const results = ref<any[]>([]);
+const isLoading = ref(false);
 
 async function onSubmit() {
 	results.value = [];
-	console.log('query: ', query.value);
 	try {
+		isLoading.value = true;
 		const data: any = await $api.post('http://localhost:3000/pdf/search', { query: query.value });
 		data.hits.hits.forEach((hit: any) =>
 			results.value.push({ filename: hit._source.filename, title: hit._source.title, matches: hit.highlight.content })
 		);
 	} catch (error) {
 		console.error('Error uploading file:', error);
+	} finally {
+		isLoading.value = false;
 	}
 }
 
@@ -52,7 +57,6 @@ function extractFromHTML(html: string) {
 	const parser = new DOMParser();
 	const doc = parser.parseFromString(html, 'text/html');
 
-	console.log(doc);
 	const emElements = doc.getElementsByTagName('em');
 	return Array.from(emElements).map(el => el.textContent);
 }
