@@ -12,7 +12,9 @@
 			<li v-for="(result, index) in results" :key="index">
 				<div v-for="(content, index) in result.matches" :key="index" class="matches">
 					<strong>{{ extractFromHTML(content) }}</strong>
-					<a :href="`http://localhost:3000/${result.filename}`" target="_blank">{{ result.title }}</a>
+					<a :href="`http://localhost:3000/${result.filename}`" target="_blank"
+						>{{ result.title }} <span style="font-size: 20px">&#10532;</span></a
+					>
 					<hr style="width: 50%; height: 1px; color: darkgreen" />
 				</div>
 			</li>
@@ -33,7 +35,7 @@ async function onSubmit() {
 	try {
 		const data: any = await $api.post('http://localhost:3000/pdf/search', { query: query.value });
 		data.hits.hits.forEach((hit: any) =>
-			results.value.push({ filename: hit._source.fileName, title: hit._source.title, matches: hit.highlight.content })
+			results.value.push({ filename: hit._source.filename, title: hit._source.title, matches: hit.highlight.content })
 		);
 	} catch (error) {
 		console.error('Error uploading file:', error);

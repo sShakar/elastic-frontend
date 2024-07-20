@@ -8,15 +8,19 @@
 			</div>
 		</form>
 
-		<h2 v-if="pdfs.length">PDFs</h2>
-		<ol class="results">
-			<li v-for="(pdf, index) in pdfs" :key="index">
-				<a :href="`http://localhost:3000/${pdf._source.fileName}`" target="_blank"
-					>{{ pdf._source.title }} <span style="font-size: 20px">&#10532;</span></a
-				>
-			</li>
-		</ol>
+		<div v-if="pdfs.length">
+			<h2>PDFs</h2>
+			<ol class="results">
+				<li v-for="(pdf, index) in pdfs" :key="index">
+					<a :href="`http://localhost:3000/${pdf._source.filename}`" target="_blank"
+						>{{ pdf._source.title }} <span style="font-size: 20px">&#10532;</span></a
+					>
+				</li>
+			</ol>
+		</div>
 	</div>
+
+	<h1 style="text-align: center" v-if="isLoading">Loading...</h1>
 </template>
 
 <script lang="ts" setup>
@@ -25,21 +29,24 @@ import { $api } from '@/services';
 
 const uploadField = ref<HTMLInputElement | null>(null);
 const pdfs = ref<any[]>([]);
+const isLoading = ref(false);
 
 async function onSubmit() {
 	const formData = new FormData();
 	formData.append('file', uploadField.value?.files![0] as Blob);
 
 	try {
-		const response = await $api.post('http://localhost:3000/pdf/upload', formData, {
+		isLoading.value = true;
+		await $api.post('http://localhost:3000/pdf/upload', formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
 		});
-		console.log(response);
 		await fetchAllPdfs();
 	} catch (error) {
 		console.error('Error uploading file:', error);
+	} finally {
+		isLoading.value = false;
 	}
 }
 
