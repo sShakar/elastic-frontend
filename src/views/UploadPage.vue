@@ -12,7 +12,7 @@
 			<h2>PDFs</h2>
 			<ol class="results">
 				<li v-for="(pdf, index) in pdfs" :key="index">
-					<a :href="`http://localhost:3000/${pdf._source.filename}`" target="_blank"
+					<a :href="`${baseUrl}/${pdf._source.filename}`" target="_blank"
 						>{{ pdf._source.title }} <span style="font-size: 20px">&#10532;</span></a
 					>
 				</li>
@@ -27,6 +27,7 @@
 import { onMounted, ref } from 'vue';
 import { $api } from '@/services';
 
+const baseUrl = ref(import.meta.env.VITE_DEFAULT_BASE_API);
 const uploadField = ref<HTMLInputElement | null>(null);
 const pdfs = ref<any[]>([]);
 const isLoading = ref(false);
@@ -37,7 +38,7 @@ async function onSubmit() {
 
 	try {
 		isLoading.value = true;
-		await $api.post('http://localhost:3000/pdf/upload', formData, {
+		await $api.post('pdf/upload', formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
@@ -53,7 +54,7 @@ async function onSubmit() {
 async function fetchAllPdfs() {
 	try {
 		isLoading.value = true;
-		const data: any = await $api.get('http://localhost:3000/pdf/all');
+		const data: any = await $api.get('pdf/all');
 		pdfs.value = data.hits.hits;
 	} catch (error) {
 		console.error('Error fetching PDFs:', error);
