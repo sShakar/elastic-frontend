@@ -52,10 +52,13 @@ async function onSubmit() {
 
 async function fetchAllPdfs() {
 	try {
+		isLoading.value = true;
 		const data: any = await $api.get('http://localhost:3000/pdf/all');
 		pdfs.value = data.hits.hits;
 	} catch (error) {
 		console.error('Error fetching PDFs:', error);
+	} finally {
+		isLoading.value = false;
 	}
 }
 
