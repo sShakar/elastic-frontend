@@ -38,11 +38,12 @@ async function onSubmit() {
 
 	try {
 		isLoading.value = true;
-		await $api.post('pdf/upload', formData, {
+		const response = await $api.post('pdf/upload', formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
 		});
+		console.log(response);
 		setTimeout(async () => await fetchAllPdfs(), 1000);
 	} catch (error) {
 		console.error('Error uploading file:', error);
