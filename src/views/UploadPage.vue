@@ -12,7 +12,7 @@
 			<h2>PDFs</h2>
 			<ol class="results">
 				<li v-for="(pdf, index) in pdfs" :key="index">
-					<a :href="`${baseUrl}/${pdf._source.filename}`" target="_blank"
+					<a :href="`${baseUrl}${pdf._source.filename}`" target="_blank"
 						>{{ pdf._source.title }} <span style="font-size: 20px">&#10532;</span></a
 					>
 				</li>

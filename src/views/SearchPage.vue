@@ -12,7 +12,7 @@
 			<li v-for="(result, index) in results" :key="index">
 				<div v-for="(content, index) in result.matches" :key="index" class="matches">
 					<strong>{{ extractFromHTML(content) }}</strong>
-					<a :href="`${baseUrl}/${result.filename}`" target="_blank"
+					<a :href="`${baseUrl}${result.filename}`" target="_blank"
 						>{{ result.title }} <span style="font-size: 20px">&#10532;</span></a
 					>
 					<hr style="width: 50%; height: 1px; color: darkgreen" />
