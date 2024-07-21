@@ -11,7 +11,7 @@
 		<ul v-if="results" class="results">
 			<li v-for="(result, index) in results" :key="index">
 				<div v-for="(match, index) in result.matches" :key="index" class="matches">
-					<strong v-html="match" style="color: green" />
+					<strong v-html="highlightMatchedQuery(match, query as string)" />
 					<a :href="`${baseUrl}${result.filename}`" target="_blank"
 						>{{ result.title }} <span style="font-size: 20px">&#10532;</span></a
 					>
@@ -41,6 +41,12 @@ async function onSubmit() {
 		data.hits.hits.forEach((hit: any) =>
 			results.value.push({ filename: hit._source.filename, title: hit._source.title, matches: hit.highlight.content })
 		);
+
+		if (results.value.length) {
+			setTimeout(() => {
+				document.querySelectorAll('em').forEach(em => (em.style.color = 'green'));
+			}, 200);
+		}
 	} catch (error) {
 		console.error('Error uploading file:', error);
 	} finally {
@@ -52,6 +58,15 @@ async function debouncedSubmit() {
 	setTimeout(async () => {
 		if (query.value) await onSubmit();
 	}, 100);
+}
+
+function highlightMatchedQuery(match: string, query: string) {
+	const matchArray = match.split(' ');
+	const found = matchArray.find(m => m === query);
+	const index = matchArray.indexOf(found as string);
+	matchArray[index] = `<em ref="foundRef">${found}</em>`;
+
+	return matchArray.join(' ');
 }
 
 // function extractFromHTML(html: string) {
